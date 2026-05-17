@@ -12,4 +12,5 @@ services:
       - "8000:8000"
     volumes:
       - ./backend/app/storage/evidence:/app/app/storage/evidence
+      - ./backend/app/storage/connections:/app/app/storage/connections
     restart: unless-stopped

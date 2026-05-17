@@ -27,6 +27,7 @@ codex*.md
 
 # Local Harness runtime evidence
 backend/app/storage/evidence/*.json
+backend/app/storage/connections/*.json
 
 # Local implementation notes
 *.local.md

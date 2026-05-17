@@ -8,6 +8,10 @@ const discoverButton = document.querySelector("#discover-instances");
 const instancesTable = document.querySelector("#instances-table");
 const instanceIdInput = document.querySelector("#instance-id");
 const selectedInstance = document.querySelector("#selected-instance");
+const executionMethod = document.querySelector("#execution-method");
+const sshHostInput = document.querySelector("#ssh-host");
+const awsAccessStatus = document.querySelector("#aws-access-status");
+const awsAccessDetail = document.querySelector("#aws-access-detail");
 const forwarderResult = document.querySelector("#forwarder-result");
 const installApproved = document.querySelector("#install-approved");
 const installResult = document.querySelector("#install-result");
@@ -115,6 +119,32 @@ document.querySelectorAll(".provider-tile").forEach((tile) => {
   });
 });
 
+document.querySelector("#refresh-aws-config").addEventListener("click", async () => {
+  awsAccessStatus.textContent = "Checking";
+  awsAccessStatus.className = "badge badge-waiting";
+  awsAccessDetail.textContent = "Checking backend AWS credentials...";
+  try {
+    const response = await fetch("/api/cloud/aws/config-status");
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.detail || `HTTP ${response.status}`);
+    }
+    if (data.status === "connected") {
+      awsAccessStatus.textContent = "Connected";
+      awsAccessStatus.className = "badge badge-ok";
+      awsAccessDetail.textContent = `${data.auth_mode} in ${data.region} (${data.identity?.account || "account available"})`;
+    } else {
+      awsAccessStatus.textContent = "Unavailable";
+      awsAccessStatus.className = "badge badge-bad";
+      awsAccessDetail.textContent = data.detail || "AWS credentials are not available to the backend.";
+    }
+  } catch (error) {
+    awsAccessStatus.textContent = "Unavailable";
+    awsAccessStatus.className = "badge badge-bad";
+    awsAccessDetail.textContent = error.message;
+  }
+});
+
 function getInstanceId() {
   return instanceIdInput.value.trim();
 }
@@ -177,6 +207,7 @@ discoverButton.addEventListener("click", async () => {
       row.addEventListener("click", () => {
         selectedInstanceData = instance;
         instanceIdInput.value = selectedInstanceData.instance_id;
+        sshHostInput.value = selectedInstanceData.private_ip || selectedInstanceData.public_ip || "";
         writeJson(selectedInstance, selectedInstanceData);
       });
       tbody.appendChild(row);
@@ -195,9 +226,13 @@ discoverButton.addEventListener("click", async () => {
 });
 
 document.querySelector("#check-forwarder").addEventListener("click", async () => {
-  forwarderResult.textContent = "Running SSM forwarder check...";
+  forwarderResult.textContent = `Running ${executionMethod.value.toUpperCase()} forwarder check...`;
   try {
-    lastForwarderResult = await postJson("/api/workflows/check-forwarder", { instance_id: getInstanceId() });
+    lastForwarderResult = await postJson("/api/workflows/check-forwarder", {
+      instance_id: getInstanceId(),
+      execution_method: executionMethod.value,
+      host: sshHostInput.value.trim() || selectedInstanceData.private_ip || selectedInstanceData.public_ip || null,
+    });
     writeJson(forwarderResult, lastForwarderResult);
   } catch (error) {
     forwarderResult.textContent = error.message;
@@ -209,6 +244,8 @@ document.querySelector("#install-forwarder").addEventListener("click", async () 
   try {
     lastInstallResult = await postJson("/api/workflows/install-forwarder", {
       instance_id: getInstanceId(),
+      execution_method: executionMethod.value,
+      host: sshHostInput.value.trim() || selectedInstanceData.private_ip || selectedInstanceData.public_ip || null,
       options: { approved: installApproved.checked },
     });
     writeJson(installResult, lastInstallResult);

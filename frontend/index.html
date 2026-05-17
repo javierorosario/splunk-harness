@@ -69,6 +69,21 @@
         <pre id="health-evidence" class="evidence-box">Waiting for backend response...</pre>
       </section>
 
+      <section class="panel connection-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Backend Configuration</p>
+            <h2>AWS Account Access</h2>
+          </div>
+          <button id="refresh-aws-config" type="button">Check AWS Config</button>
+        </div>
+
+        <div class="access-status-row">
+          <span id="aws-access-status" class="badge badge-waiting">Not checked</span>
+          <span id="aws-access-detail" class="access-detail">Backend AWS credentials are checked server-side.</span>
+        </div>
+      </section>
+
       <section class="workflow-grid">
         <article class="panel workflow-card">
           <p class="eyebrow">Step 2</p>
@@ -87,17 +102,25 @@
         <article class="panel workflow-card">
           <p class="eyebrow">Step 4</p>
           <h2>Forwarder Status Check</h2>
-          <p>Run the predefined SSM status check for Splunk Universal Forwarder.</p>
+          <p>Run a predefined host-level check for Splunk Universal Forwarder.</p>
+          <label for="execution-method">Execution Method</label>
+          <select id="execution-method">
+            <option value="ssh" selected>SSH</option>
+            <option value="manual">Manual</option>
+            <option value="ssm">AWS SSM</option>
+          </select>
+          <label for="ssh-host">SSH Host</label>
+          <input id="ssh-host" type="text" placeholder="Uses selected private IP when available">
           <button id="check-forwarder" type="button">Check Forwarder</button>
           <pre id="forwarder-result" class="small-evidence">No check has run.</pre>
         </article>
         <article class="panel workflow-card">
           <p class="eyebrow">Step 5</p>
           <h2>Install / Configure Forwarder</h2>
-          <p>Requires explicit operator approval. The current workflow sends a safe placeholder command.</p>
+          <p>Requires explicit operator approval. Harness only runs predefined workflow commands.</p>
           <label class="check-row">
             <input id="install-approved" type="checkbox">
-            <span>I approve the SSM install/configure workflow</span>
+            <span>I approve the install/configure workflow</span>
           </label>
           <button id="install-forwarder" type="button">Run Approved Install</button>
           <pre id="install-result" class="small-evidence">No install workflow has run.</pre>

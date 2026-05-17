@@ -5,6 +5,10 @@ from pydantic import BaseModel, Field
 
 class InstanceRequest(BaseModel):
     instance_id: str = Field(..., min_length=3)
+    execution_method: str = "ssh"
+    host: str | None = None
+    ssh_username: str | None = None
+    ssh_port: int | None = None
 
 
 class ForwarderInstallOptions(BaseModel):

@@ -31,6 +31,13 @@ echo "Operator approval received; add package download and deployment-server con
 def _session(settings: Settings) -> boto3.Session:
     if settings.aws_profile:
         return boto3.Session(profile_name=settings.aws_profile, region_name=settings.aws_region)
+    if settings.aws_access_key_id and settings.aws_secret_access_key:
+        return boto3.Session(
+            aws_access_key_id=settings.aws_access_key_id,
+            aws_secret_access_key=settings.aws_secret_access_key,
+            aws_session_token=settings.aws_session_token or None,
+            region_name=settings.aws_region,
+        )
     return boto3.Session(region_name=settings.aws_region)
 
 

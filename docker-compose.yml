@@ -1,0 +1,15 @@
+services:
+  harness:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: harness
+    env_file:
+      - path: .env.example
+      - path: .env
+        required: false
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app/storage/evidence:/app/app/storage/evidence
+    restart: unless-stopped

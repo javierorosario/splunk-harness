@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Harness</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Operational Command Center</p>
+        <h1>Harness</h1>
+      </div>
+      <span id="backend-status" class="badge badge-waiting">Checking backend</span>
+    </header>
+
+    <main class="layout">
+      <section class="panel status-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Step 1</p>
+            <h2>Cloud Provider / Environment Status</h2>
+          </div>
+          <button id="refresh-health" type="button">Refresh</button>
+        </div>
+
+        <div class="provider-strip" aria-label="Cloud provider adapters">
+          <button class="provider-tile active-provider" type="button" data-provider="aws">
+            <span class="provider-name">AWS</span>
+            <strong>EC2 + SSM</strong>
+            <small>Active MVP adapter</small>
+          </button>
+          <button class="provider-tile mock-provider" type="button" data-provider="azure">
+            <span class="provider-name">Azure</span>
+            <strong>VM + Run Command</strong>
+            <small>Mock adapter planned</small>
+          </button>
+          <button class="provider-tile mock-provider" type="button" data-provider="gcp">
+            <span class="provider-name">Google Cloud</span>
+            <strong>Compute Engine + OS Config</strong>
+            <small>Mock adapter planned</small>
+          </button>
+        </div>
+
+        <p id="provider-note" class="provider-note">
+          AWS is the implemented demo path. Azure and Google Cloud are shown as platform adapter targets for the same onboarding and evidence workflow.
+        </p>
+
+        <div id="health-grid" class="status-grid" aria-live="polite">
+          <div class="status-item">
+            <span>Backend</span>
+            <strong>Pending</strong>
+          </div>
+          <div class="status-item">
+            <span>AWS</span>
+            <strong>Pending</strong>
+          </div>
+          <div class="status-item">
+            <span>Splunk</span>
+            <strong>Pending</strong>
+          </div>
+          <div class="status-item">
+            <span>AI Provider</span>
+            <strong>Pending</strong>
+          </div>
+        </div>
+
+        <pre id="health-evidence" class="evidence-box">Waiting for backend response...</pre>
+      </section>
+
+      <section class="workflow-grid">
+        <article class="panel workflow-card">
+          <p class="eyebrow">Step 2</p>
+          <h2>Cloud Resource Discovery</h2>
+          <p id="discovery-copy">List EC2 metadata, state, IPs, platform, and SSM managed status.</p>
+          <button id="discover-instances" type="button">Discover Instances</button>
+          <div id="instances-table" class="table-wrap"></div>
+        </article>
+        <article class="panel workflow-card">
+          <p class="eyebrow">Step 3</p>
+          <h2>Selected Instance Detail</h2>
+          <label for="instance-id">Instance ID</label>
+          <input id="instance-id" type="text" placeholder="i-0123456789abcdef0">
+          <pre id="selected-instance" class="small-evidence">No instance selected.</pre>
+        </article>
+        <article class="panel workflow-card">
+          <p class="eyebrow">Step 4</p>
+          <h2>Forwarder Status Check</h2>
+          <p>Run the predefined SSM status check for Splunk Universal Forwarder.</p>
+          <button id="check-forwarder" type="button">Check Forwarder</button>
+          <pre id="forwarder-result" class="small-evidence">No check has run.</pre>
+        </article>
+        <article class="panel workflow-card">
+          <p class="eyebrow">Step 5</p>
+          <h2>Install / Configure Forwarder</h2>
+          <p>Requires explicit operator approval. The current workflow sends a safe placeholder command.</p>
+          <label class="check-row">
+            <input id="install-approved" type="checkbox">
+            <span>I approve the SSM install/configure workflow</span>
+          </label>
+          <button id="install-forwarder" type="button">Run Approved Install</button>
+          <pre id="install-result" class="small-evidence">No install workflow has run.</pre>
+        </article>
+        <article class="panel workflow-card">
+          <p class="eyebrow">Step 6</p>
+          <h2>Splunk Telemetry Validation</h2>
+          <label for="hostname">Hostname</label>
+          <input id="hostname" type="text" placeholder="ip-10-0-0-10">
+          <label for="splunk-index">Index</label>
+          <input id="splunk-index" type="text" placeholder="main">
+          <label for="sourcetype">Sourcetype</label>
+          <input id="sourcetype" type="text" placeholder="optional">
+          <button id="validate-splunk" type="button">Validate Ingestion</button>
+          <pre id="splunk-result" class="small-evidence">No validation has run.</pre>
+        </article>
+        <article class="panel workflow-card">
+          <p class="eyebrow">Step 7</p>
+          <h2>AI-Assisted Investigation</h2>
+          <p>Generate an evidence-grounded operator summary. This is not a chatbot.</p>
+          <button id="run-investigation" type="button">Generate Investigation</button>
+          <pre id="ai-result" class="small-evidence">No investigation has run.</pre>
+        </article>
+        <article class="panel workflow-card">
+          <p class="eyebrow">Step 8</p>
+          <h2>Evidence Summary</h2>
+          <p>Write a timestamped JSON bundle under backend storage.</p>
+          <button id="generate-evidence" type="button">Generate Evidence Bundle</button>
+          <pre id="evidence-result" class="small-evidence">No bundle has been generated.</pre>
+        </article>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

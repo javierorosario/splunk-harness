@@ -3,6 +3,34 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Agentic coding assistants and local AI workspace state
+.agents/
+.codex/
+.claude/
+.cursor/
+.continue/
+.windsurf/
+.aider*
+.cody/
+.crush/
+.gemini/
+.kilocode/
+.opencode/
+.qodo/
+.roo/
+.tabnine/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+codex*.md
+*_codex_packet.md
+
+# Local Harness runtime evidence
+backend/app/storage/evidence/*.json
+
+# Local implementation notes
+*.local.md
+
 # C extensions
 *.so
 
